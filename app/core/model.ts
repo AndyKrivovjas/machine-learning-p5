@@ -1,0 +1,5 @@
+class Model {
+
+  classifier: Classifier;
+
+}

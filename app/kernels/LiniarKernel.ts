@@ -1,0 +1,3 @@
+class LiniarKernel extends Kernel {
+  
+}
