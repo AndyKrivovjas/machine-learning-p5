@@ -1,5 +1,6 @@
+declare var $: any;
 var meter;
-var knn = new KNN(5);
+var cls = new KNN(5);
 var X_train;
 var y_train;
 
@@ -11,7 +12,7 @@ function setup() {
   X_train = gen[0];
   y_train = gen[1];
 
-  knn.fit(X_train, y_train);
+  cls.fit(X_train, y_train);
 }
 
 function draw() {
@@ -31,20 +32,27 @@ function draw() {
     });
   pop();
 
-  knn.show();
+  cls.show();
 
   meter.tick();
 }
 
 function mouseClicked() {
-  var X_test = createVector(mouseX, mouseY);
-  var y_test = knn.predict(X_test);
+  var dashboardWidth = $('#dashboard').outerWidth();
+  var dashboardHeight = $('#dashboard').outerHeight();
 
-  X_train.push(X_test);
-  y_train.push(y_test[0]);
+  if(mouseX > 0 && mouseX < width
+  && mouseY > 0 && mouseY < height
+  && (mouseX < (width - dashboardWidth)
+  || mouseY > dashboardHeight)) {
+    var X_test = createVector(mouseX, mouseY);
+    var y_test = cls.predict(X_test);
 
-  knn.fit(X_train, y_train);
+    X_train.push(X_test);
+    y_train.push(y_test[0]);
 
-  // prevent default
+    cls.fit(X_train, y_train);
+  }
+
   return false;
 }

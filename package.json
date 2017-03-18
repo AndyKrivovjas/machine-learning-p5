@@ -19,6 +19,8 @@
     "url": "git://github.com:AndyKrivovjas/p5-typescript-quick-start.git"
   },
   "dependencies": {
+    "jquery": "^3.2.0",
+    "materialize-css": "^0.98.0",
     "p5": "^0.5.5"
   }
 }

@@ -1,5 +1,5 @@
 var meter;
-var knn = new KNN(5);
+var cls = new KNN(5);
 var X_train;
 var y_train;
 function setup() {
@@ -8,7 +8,7 @@ function setup() {
     var gen = Classifier.randomEntities2D(50);
     X_train = gen[0];
     y_train = gen[1];
-    knn.fit(X_train, y_train);
+    cls.fit(X_train, y_train);
 }
 function draw() {
     background(51);
@@ -26,16 +26,22 @@ function draw() {
         ellipse(item.x, item.y, 15);
     });
     pop();
-    knn.show();
+    cls.show();
     meter.tick();
 }
 function mouseClicked() {
-    var X_test = createVector(mouseX, mouseY);
-    var y_test = knn.predict(X_test);
-    X_train.push(X_test);
-    y_train.push(y_test[0]);
-    knn.fit(X_train, y_train);
-    // prevent default
+    var dashboardWidth = $('#dashboard').outerWidth();
+    var dashboardHeight = $('#dashboard').outerHeight();
+    if (mouseX > 0 && mouseX < width
+        && mouseY > 0 && mouseY < height
+        && (mouseX < (width - dashboardWidth)
+            || mouseY > dashboardHeight)) {
+        var X_test = createVector(mouseX, mouseY);
+        var y_test = cls.predict(X_test);
+        X_train.push(X_test);
+        y_train.push(y_test[0]);
+        cls.fit(X_train, y_train);
+    }
     return false;
 }
 //# sourceMappingURL=main.js.map

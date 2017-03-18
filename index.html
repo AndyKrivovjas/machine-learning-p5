@@ -14,6 +14,11 @@
   <!-- FPS meter -->
   <script src="system/fpsmeter.js"></script>
 
+  <!-- Materialize -->
+  <link rel="stylesheet" href="node_modules/materialize-css/dist/css/materialize.min.css">
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/materialize-css/dist/js/materialize.min.js"></script>
+
   <!-- Main app -->
   <script src="app/core/model.js"></script>
   <script src="app/core/kernel.js"></script>
@@ -27,6 +32,67 @@
 
 </head>
 <body>
+  <div id="dashboard">
+    <div class="card-content white-text">
+      <span class="card-title">Settings</span>
+    </div>
+    <div class="card-body">
+      <div class="classifier">
+        <div class="input-field col s12">
+          <select name="classifier" onchange="adjustOptions(this);">
+            <option value="knn" selected>k nearest neighbor</option>
+            <option value="svm">Support Vector Machine</option>
+          </select>
+          <label>Classifier</label>
+        </div>
+        <div class="options">
+          <div class="item knn">
+            <div class="input-field col s12">
+              <input type="text" value="5" name="k-knn">
+              <label>Count of neighbors</label>
+            </div>
+          </div>
 
+          <div class="item svm">
+            Coming soon!
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-action">
+      <a class="waves-effect waves-light btn apply" onclick="applyClassifier(this)">Apply</a>
+    </div>
+  </div>
 </body>
+<script>
+  $(document).ready(function() {
+   $('select').material_select();
+   adjustOptions($('select'));
+  });
+
+  function adjustOptions(select) {
+    var c = $(select).val();
+    $('#dashboard .options .item').hide();
+    $('#dashboard .options').find('.' + c).show();
+
+    if(c == 'svm') {
+      $('.btn.apply').attr('disabled', true);
+    } else {
+      $('.btn.apply').attr('disabled', false);
+    }
+  }
+
+  function applyClassifier(btn) {
+    if($(btn).is(":not(:disabled)")) {
+      var c = $('select[name="classifier"]').val().toUpperCase();
+      if(c == "KNN") {
+        var count = parseInt($('input[name="k-knn"]').val()) || 2;
+        cls = new KNN(count);
+      }
+      cls.fit(X_train, y_train);
+
+      Materialize.toast('You have just modified settings. Let\'s click on the field!', 4000);
+    }
+  }
+</script>
 </html>
