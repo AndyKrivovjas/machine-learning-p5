@@ -62,3 +62,10 @@ body {
 #dashboard .apply {
   display: block;
 }
+
+#toast-container {
+  left: 40px !important;
+  bottom: 40px !important;
+  top: auto;
+  right: auto;
+}
