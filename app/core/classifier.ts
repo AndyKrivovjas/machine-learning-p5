@@ -9,22 +9,6 @@ class Classifier {
     this.labels = labels;
   }
 
-  static randomEntities2D(len: number) {
-    var entities: p5.Vector[] = [];
-    var labels: number[] = [];
-
-    for(let i = 0; i < len; i++) {
-      var x = random(width);
-      var y = random(height);
-
-      var vector = createVector(x, y);
-      entities.push(vector);
-      labels.push(round(random(1)));
-    }
-
-    return [entities, labels];
-  }
-
 }
 
 function pre(target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) {

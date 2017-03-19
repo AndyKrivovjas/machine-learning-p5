@@ -5,7 +5,7 @@ var y_train;
 function setup() {
     createCanvas(windowWidth, windowHeight);
     meter = new FPSmeter();
-    var gen = Classifier.randomEntities2D(50);
+    var gen = Generator.randomEntities2D(100);
     X_train = gen[0];
     y_train = gen[1];
     cls.fit(X_train, y_train);

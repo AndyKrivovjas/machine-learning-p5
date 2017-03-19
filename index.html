@@ -20,6 +20,7 @@
   <script src="node_modules/materialize-css/dist/js/materialize.min.js"></script>
 
   <!-- Main app -->
+  <script src="app/core/generator.js"></script>
   <script src="app/core/model.js"></script>
   <script src="app/core/kernel.js"></script>
   <script src="app/core/classifier.js"></script>
@@ -37,19 +38,54 @@
       <span class="card-title">Settings</span>
     </div>
     <div class="card-body">
+      <div class="generator">
+        <div class="heading">
+          Generator
+        </div>
+
+        <div class="input-field col s12">
+          <select name="generator" onchange="adjustGenerators(this);">
+            <option value="rnd" selected>Random</option>
+            <option value="perlin">Perlin Noise</option>
+          </select>
+        </div>
+        <div class="input-field col s12">
+          <input type="text" value="100" name="generator-entities-count">
+          <label>Count</label>
+        </div>
+      </div>
+
+      <div class="generators">
+        <div class="item perlin">
+          <div class="input-field col s6">
+            <input type="text" value="250" name="perlin-offset-x">
+            <label>OffsetX</label>
+          </div>
+          <div class="input-field col s6">
+            <input type="text" value="250" name="perlin-offset-y">
+            <label>OffsetY</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-action">
+      <a class="waves-effect waves-light btn generate" onclick="generate(this)">Generate</a>
+    </div>
+    <div class="card-body">
       <div class="classifier">
+        <div class="heading">
+          Classifier
+        </div>
         <div class="input-field col s12">
           <select name="classifier" onchange="adjustOptions(this);">
             <option value="knn" selected>k nearest neighbor</option>
             <option value="svm">Support Vector Machine</option>
           </select>
-          <label>Classifier</label>
         </div>
         <div class="options">
           <div class="item knn">
             <div class="input-field col s12">
               <input type="text" value="5" name="k-knn">
-              <label>Count of neighbors</label>
             </div>
           </div>
 
@@ -67,7 +103,8 @@
 <script>
   $(document).ready(function() {
    $('select').material_select();
-   adjustOptions($('select'));
+   adjustOptions($('select[name="classifier"]'));
+   adjustGenerators($('select[name="generator"]'));
   });
 
   function adjustOptions(select) {
@@ -82,7 +119,13 @@
     }
   }
 
-  function applyClassifier(btn) {
+  function adjustGenerators(select) {
+    var c = $(select).val();
+    $('#dashboard .generators .item').hide();
+    $('#dashboard .generators').find('.' + c).show();
+  }
+
+  function applyClassifier(btn, hide_toast) {
     if($(btn).is(":not(:disabled)")) {
       var c = $('select[name="classifier"]').val().toUpperCase();
       if(c == "KNN") {
@@ -91,7 +134,31 @@
       }
       cls.fit(X_train, y_train);
 
-      Materialize.toast('You have just modified settings. Let\'s click on the field!', 4000);
+      if(!hide_toast) {
+        Materialize.toast('You have just modified settings. Let\'s click on the field!', 4000);
+      }
+    }
+  }
+
+  function generate(btn) {
+    if($(btn).is(":not(:disabled)")) {
+      var c = $('select[name="generator"]').val();
+      var count = parseInt($('input[name="generator-entities-count"]').val()) || 100;
+      var gen;
+      if(c == "rnd") {
+        gen = Generator.randomEntities2D(count);
+      }
+      if(c == "perlin") {
+        var offsetx = parseInt($('input[name="perlin-offset-x"]').val()) || 250;
+        var offsety = parseInt($('input[name="perlin-offset-y"]').val()) || 250;
+        gen = Generator.perlinNoise(offsetx, offsety, count);
+      }
+      X_train = gen[0];
+      y_train = gen[1];
+
+      applyClassifier($('.apply'), true);
+
+      Materialize.toast('Success!', 4000);
     }
   }
 </script>

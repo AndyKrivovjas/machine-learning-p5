@@ -8,7 +8,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   meter = new FPSmeter();
 
-  var gen = Classifier.randomEntities2D(50);
+  var gen = Generator.randomEntities2D(100);
   X_train = gen[0];
   y_train = gen[1];
 
